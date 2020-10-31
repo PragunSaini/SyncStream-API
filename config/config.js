@@ -1,5 +1,3 @@
-// Hold all the ENV and configuation settings
+require('dotenv').config()
 
-const PORT = 8000
-
-module.exports = { PORT }
+module.exports.PORT = process.env.PORT || 8000

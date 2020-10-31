@@ -1,8 +1,8 @@
-const express = require('express')
+const app = require('express')()
+const http = require('http').createServer(app)
+const io = require('socket.io')(http)
 
 const { PORT } = require('./config/config')
-
-const app = express()
 
 app.get('/', (req, res) => {
   res.json({
@@ -11,6 +11,13 @@ app.get('/', (req, res) => {
   })
 })
 
-app.listen(PORT, () => {
+io.on('connection', socket => {
+  console.log('A user connected!')
+  socket.on('disconnect', () => {
+    console.log('User Disconnected!')
+  })
+})
+
+http.listen(PORT, () => {
   console.log(`Listening at http://localhost:${PORT}...`)
 })
