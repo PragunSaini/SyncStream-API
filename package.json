@@ -1,0 +1,27 @@
+{
+  "name": "syncstream-api",
+  "version": "1.0.0",
+  "description": "Backend API and Websocket server for SyncStream",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PragunSaini/SyncStream-API.git"
+  },
+  "keywords": [
+    "api",
+    "websocket",
+    "syncstream"
+  ],
+  "author": "Pragun Saini",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/PragunSaini/SyncStream-API/issues"
+  },
+  "homepage": "https://github.com/PragunSaini/SyncStream-API#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
