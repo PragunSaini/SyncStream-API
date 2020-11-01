@@ -1,7 +1,7 @@
 // Trying out tests
 
 describe('Index', () => {
-  test('Just like that', () => {
+  test('Sample test', () => {
     expect(true).toBe(true)
   })
 
