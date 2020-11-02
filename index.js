@@ -6,6 +6,7 @@ const bodyParser = require('body-parser')
 
 const { PORT } = require('./config/config')
 const registerRoute = require('./routes/register')
+const loginRoute = require('./routes/login')
 
 // Add middleware
 app.use(cors())
@@ -21,6 +22,7 @@ app.get('/', (req, res) => {
 })
 
 app.use('/register', registerRoute)
+app.use('/login', loginRoute)
 
 // Setup sockets
 io.on('connection', socket => {

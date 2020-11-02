@@ -5,4 +5,16 @@ async function insertUser(user) {
   return insertedUser[0]
 }
 
-module.exports = { insertUser }
+async function getUser(criteria = {}) {
+  if (criteria.id) {
+    const user = await knex('users').where('id', criteria.id)
+    return user.length == 0 ? null : user[0]
+  } else if (criteria.username) {
+    const user = await knex('users').where('username', criteria.username)
+    return user.length == 0 ? null : user[0]
+  } else {
+    return null
+  }
+}
+
+module.exports = { insertUser, getUser }
