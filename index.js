@@ -1,12 +1,22 @@
 const app = require('express')()
 const http = require('http').createServer(app)
-const io = require('socket.io')(http)
 const cors = require('cors')
 const bodyParser = require('body-parser')
+
+const io = require('socket.io')(http, {
+  // Also requires CORS
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST'],
+    credentials: true,
+  },
+})
 
 const { PORT } = require('./config/config')
 const registerRoute = require('./routes/register')
 const loginRoute = require('./routes/login')
+
+const chatSocket = require('./sockets/chat')
 
 // Add middleware
 app.use(cors())
@@ -30,6 +40,8 @@ io.on('connection', socket => {
   socket.on('disconnect', () => {
     console.log('User Disconnected!')
   })
+
+  chatSocket(socket, io)
 })
 
 // Start the server

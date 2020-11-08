@@ -11,7 +11,9 @@ router.post('/', async (req, res) => {
     const password = req.body.password
 
     const user = await getUser({ username })
-    if (user == null) throw Error()
+    if (user == null) {
+      throw Error()
+    }
 
     if (!(await checkPassword(password, user.password))) {
       throw Error()
