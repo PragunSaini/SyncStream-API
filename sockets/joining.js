@@ -1,4 +1,3 @@
-const room = require('./room')
 const { rooms, users } = require('./room')
 
 module.exports = (socket, io) => {
@@ -23,6 +22,9 @@ module.exports = (socket, io) => {
     socket.in(roomid).emit('NEW_JOIN', member)
   })
 
+  /*
+   * Leave the room (by event)
+   */
   socket.on('LEAVE_ROOM', () => {
     if (users[socket.id]) {
       const roomid = users[socket.id]
@@ -34,6 +36,9 @@ module.exports = (socket, io) => {
     }
   })
 
+  /*
+   * Leave the room (by disconnect)
+   */
   socket.on('disconnect', () => {
     if (users[socket.id]) {
       const roomid = users[socket.id]

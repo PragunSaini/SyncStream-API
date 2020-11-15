@@ -18,6 +18,8 @@ const loginRoute = require('./routes/login')
 const roomRoute = require('./routes/room')
 
 const joinSocket = require('./sockets/joining')
+const chatSocket = require('./sockets/chat')
+const playlistSocket = require('./sockets/playlist')
 
 // Add middleware
 app.use(cors())
@@ -44,6 +46,8 @@ io.on('connection', socket => {
   })
 
   joinSocket(socket, io)
+  chatSocket(socket, io)
+  playlistSocket(socket, io)
 })
 
 // Start the server
