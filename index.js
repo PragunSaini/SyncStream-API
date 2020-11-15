@@ -17,7 +17,7 @@ const registerRoute = require('./routes/register')
 const loginRoute = require('./routes/login')
 const roomRoute = require('./routes/room')
 
-const chatSocket = require('./sockets/joining')
+const joinSocket = require('./sockets/joining')
 
 // Add middleware
 app.use(cors())
@@ -43,7 +43,7 @@ io.on('connection', socket => {
     console.log('User Disconnected!')
   })
 
-  chatSocket(socket, io)
+  joinSocket(socket, io)
 })
 
 // Start the server

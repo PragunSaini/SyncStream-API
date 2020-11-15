@@ -1,5 +1,5 @@
 const room = require('./room')
-const { rooms } = require('./room')
+const { rooms, users } = require('./room')
 
 module.exports = (socket, io) => {
   /*
@@ -12,10 +12,36 @@ module.exports = (socket, io) => {
     socket.join(roomid)
     const member = {
       ...user,
-      type: user.username == room[roomid].owner ? 'Owner' : 'Guest',
+      type: user.username == rooms[roomid].owner ? 'Owner' : 'Guest',
+      socketid: socket.id,
     }
     rooms[roomid].members = [...rooms[roomid].members, member]
-    // Send join info to all members
-    io.in(roomid).emit('NEW_JOIN', member)
+    users[socket.id] = roomid
+    // Send room info to new member
+    socket.emit('ROOM_INFO', rooms[roomid])
+    // Send join info to all other members
+    socket.in(roomid).emit('NEW_JOIN', member)
+  })
+
+  socket.on('LEAVE_ROOM', () => {
+    if (users[socket.id]) {
+      const roomid = users[socket.id]
+      delete users[socket.id]
+      rooms[roomid].members = rooms[roomid].members.filter(
+        member => member.socketid != socket.id
+      )
+      socket.in(roomid).emit('MEMBER_EXIT', socket.id)
+    }
+  })
+
+  socket.on('disconnect', () => {
+    if (users[socket.id]) {
+      const roomid = users[socket.id]
+      delete users[socket.id]
+      rooms[roomid].members = rooms[roomid].members.filter(
+        member => member.socketid != socket.id
+      )
+      socket.in(roomid).emit('MEMBER_EXIT', socket.id)
+    }
   })
 }

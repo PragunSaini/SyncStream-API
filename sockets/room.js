@@ -1,6 +1,7 @@
 const { nanoid } = require('nanoid')
 
 const rooms = {}
+const users = {}
 
 const createRoom = ownerUserName => {
   const roomid = nanoid(8)
@@ -21,4 +22,4 @@ const deleteRoom = roomid => {
   delete rooms[roomid]
 }
 
-module.exports = { rooms, createRoom, checkRoomExists, deleteRoom }
+module.exports = { rooms, users, createRoom, checkRoomExists, deleteRoom }
