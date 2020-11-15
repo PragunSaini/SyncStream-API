@@ -15,8 +15,9 @@ const io = require('socket.io')(http, {
 const { PORT } = require('./config/config')
 const registerRoute = require('./routes/register')
 const loginRoute = require('./routes/login')
+const roomRoute = require('./routes/room')
 
-const chatSocket = require('./sockets/chat')
+const chatSocket = require('./sockets/joining')
 
 // Add middleware
 app.use(cors())
@@ -33,6 +34,7 @@ app.get('/', (req, res) => {
 
 app.use('/register', registerRoute)
 app.use('/login', loginRoute)
+app.use('/room', roomRoute)
 
 // Setup sockets
 io.on('connection', socket => {
