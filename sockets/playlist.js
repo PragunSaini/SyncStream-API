@@ -8,10 +8,15 @@ module.exports = (socket, io) => {
    */
   socket.on('PLAY_ADD', data => {
     const roomid = users[socket.id]
-    const newItem = { ...data, id: nanoid(3) + data.vid }
-    rooms[roomid].playlist = [...rooms[roomid].playlist, newItem]
-    // Broadcast to all members
-    io.in(roomid).emit('PLAY_ADD', newItem)
+    if (rooms[roomid].current == null) {
+      rooms[roomid].current = { vid: data.vid, state: 'LOADED' }
+      io.in(roomid).emit('LOAD', data.vid)
+    } else {
+      const newItem = { ...data, id: nanoid(3) + data.vid }
+      rooms[roomid].playlist = [...rooms[roomid].playlist, newItem]
+      // Broadcast to all members
+      io.in(roomid).emit('PLAY_ADD', newItem)
+    }
   })
 
   /*

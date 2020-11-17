@@ -18,6 +18,7 @@ router.post('/join', authenticateToken, (req, res) => {
   const { roomid } = req.body
   if (!checkRoomExists(roomid)) {
     res.status(404).json({ msg: 'Room ' + roomid + ' does not exist' })
+    return
   }
   res.json({ roomid })
 })

@@ -10,6 +10,7 @@ const createRoom = ownerUserName => {
     playlist: [],
     name: 'Room ' + roomid,
     owner: ownerUserName,
+    current: null,
   }
   return roomid
 }
