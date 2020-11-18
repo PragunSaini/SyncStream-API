@@ -22,6 +22,7 @@ const chatSocket = require('./sockets/chat')
 const playlistSocket = require('./sockets/playlist')
 const videoSocket = require('./sockets/video.js')
 const memberSocket = require('./sockets/members')
+const roomDataSocket = require('./sockets/roomdata')
 
 // Add middleware
 app.use(cors())
@@ -52,6 +53,7 @@ io.on('connection', socket => {
   playlistSocket(socket, io)
   videoSocket(socket, io)
   memberSocket(socket, io)
+  roomDataSocket(socket, io)
 })
 
 // Start the server

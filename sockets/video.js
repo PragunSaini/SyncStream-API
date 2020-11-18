@@ -42,16 +42,24 @@ module.exports = (socket, io) => {
    */
   socket.on('PAUSE', data => {
     const roomid = users[socket.id]
-    if (rooms[roomid]?.current?.state !== 'PAUSED') {
-      clearInterval(rooms[roomid].current.timer)
-      rooms[roomid].current = {
-        ...rooms[roomid].current,
-        time: data,
-        state: 'PAUSED',
+    if (rooms[roomid].members[socket.id].type === 'Guest') {
+      // Guests cannot pause the video
+      if (rooms[roomid]?.current?.state !== 'PAUSED') {
+        socket.emit('PLAY')
       }
-      socket.in(roomid).emit('PAUSE', data)
-    } else if (rooms[roomid]?.current?.state === 'PAUSED') {
-      rooms[roomid].current.time = data
+    } else {
+      // Owners and Mods can pause it
+      if (rooms[roomid]?.current?.state !== 'PAUSED') {
+        clearInterval(rooms[roomid].current.timer)
+        rooms[roomid].current = {
+          ...rooms[roomid].current,
+          time: data,
+          state: 'PAUSED',
+        }
+        socket.in(roomid).emit('PAUSE', data)
+      } else if (rooms[roomid]?.current?.state === 'PAUSED') {
+        rooms[roomid].current.time = data
+      }
     }
   })
 
@@ -60,15 +68,23 @@ module.exports = (socket, io) => {
    */
   socket.on('PLAY', () => {
     const roomid = users[socket.id]
-    if (rooms[roomid]?.current?.state === 'PAUSED') {
-      socket.in(roomid).emit('PLAY')
-      rooms[roomid].current = {
-        ...rooms[roomid].current,
-        state: 'PLAYING',
-        timer: setInterval(() => {
-          rooms[roomid].current.time++
-          io.in(roomid).emit('SYNC', rooms[roomid].current.time)
-        }, 1000),
+    if (rooms[roomid].members[socket.id].type === 'Guest') {
+      // Guests cannot resume the video
+      if (rooms[roomid].current.state === 'PAUSED') {
+        socket.emit('PAUSE', rooms[roomid].current.time)
+      }
+    } else {
+      // Owners and mods can
+      if (rooms[roomid]?.current?.state === 'PAUSED') {
+        socket.in(roomid).emit('PLAY')
+        rooms[roomid].current = {
+          ...rooms[roomid].current,
+          state: 'PLAYING',
+          timer: setInterval(() => {
+            rooms[roomid].current.time++
+            io.in(roomid).emit('SYNC', rooms[roomid].current.time)
+          }, 1000),
+        }
       }
     }
   })

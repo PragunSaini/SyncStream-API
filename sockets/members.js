@@ -36,7 +36,6 @@ module.exports = (socket, io) => {
     } else {
       // Demote Mod to Guest
       rooms[roomid].members[data].type = 'Guest'
-      console.log(rooms[roomid].members)
       io.in(roomid).emit('DEMOTE', data)
     }
   })
