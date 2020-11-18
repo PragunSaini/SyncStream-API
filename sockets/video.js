@@ -23,6 +23,21 @@ module.exports = (socket, io) => {
   })
 
   /*
+   * Send current video playing info to new member on request
+   */
+  socket.on('CURRENT', () => {
+    const roomid = users[socket.id]
+    // send current track info to new member
+    if (rooms[roomid].current !== null) {
+      socket.emit('CURRENT', {
+        vid: rooms[roomid].current.vid,
+        state: rooms[roomid].current.state,
+        time: rooms[roomid].current.time,
+      })
+    }
+  })
+
+  /*
    * Pause current video
    */
   socket.on('PAUSE', data => {

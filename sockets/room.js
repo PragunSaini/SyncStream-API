@@ -6,7 +6,7 @@ const users = {}
 const createRoom = ownerUserName => {
   const roomid = nanoid(8)
   rooms[roomid] = {
-    members: [],
+    members: {},
     playlist: [],
     name: 'Room ' + roomid,
     owner: ownerUserName,

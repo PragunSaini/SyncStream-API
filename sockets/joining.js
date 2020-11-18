@@ -14,10 +14,11 @@ module.exports = (socket, io) => {
       type: user.username == rooms[roomid].owner ? 'Owner' : 'Guest',
       socketid: socket.id,
     }
-    rooms[roomid].members = [...rooms[roomid].members, member]
+    // rooms[roomid].members = [...rooms[roomid].members, member]
+    rooms[roomid].members[socket.id] = member
     users[socket.id] = roomid
     // Send room info to new member
-    socket.emit('ROOM_INFO', rooms[roomid])
+    socket.emit('ROOM_INFO', { ...rooms[roomid], current: undefined })
     // Send join info to all other members
     socket.in(roomid).emit('NEW_JOIN', member)
   })
@@ -29,9 +30,11 @@ module.exports = (socket, io) => {
     if (users[socket.id]) {
       const roomid = users[socket.id]
       delete users[socket.id]
-      rooms[roomid].members = rooms[roomid].members.filter(
-        member => member.socketid != socket.id
-      )
+      delete rooms[roomid].members[socket.id]
+      // rooms[roomid].members = rooms[roomid].members.filter(
+      //   member => member.socketid != socket.id
+      // )
+      socket.leave(roomid)
       socket.in(roomid).emit('MEMBER_EXIT', socket.id)
     }
   })
@@ -43,9 +46,11 @@ module.exports = (socket, io) => {
     if (users[socket.id]) {
       const roomid = users[socket.id]
       delete users[socket.id]
-      rooms[roomid].members = rooms[roomid].members.filter(
-        member => member.socketid != socket.id
-      )
+      delete rooms[roomid].members[socket.id]
+      // rooms[roomid].members = rooms[roomid].members.filter(
+      //   member => member.socketid != socket.id
+      // )
+      socket.leave(roomid)
       socket.in(roomid).emit('MEMBER_EXIT', socket.id)
     }
   })
