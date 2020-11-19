@@ -7,15 +7,8 @@ module.exports = (socket, io) => {
    */
   socket.on('PROMOTE', data => {
     const roomid = users[socket.id]
-    // console.log(rooms[roomid].members[data])
-    if (
-      rooms[roomid].members[data].type === 'Owner' ||
-      rooms[roomid].members[data].type === 'Mod'
-    ) {
-      // Can't promote Mod or Owner
-      return
-    } else {
-      // Promote Guest to Mod
+    // Promote Guest to Mod
+    if (rooms[roomid].members[data].type === 'Guest') {
       rooms[roomid].members[data].type = 'Mod'
       io.in(roomid).emit('PROMOTE', data)
     }
@@ -27,27 +20,22 @@ module.exports = (socket, io) => {
    */
   socket.on('DEMOTE', data => {
     const roomid = users[socket.id]
-    if (
-      rooms[roomid].members[data].type === 'Owner' ||
-      rooms[roomid].members[data].type === 'Guest'
-    ) {
-      // Can't demote Guest or Owner
-      return
-    } else {
-      // Demote Mod to Guest
+    // Demote Mod to Guest
+    if (rooms[roomid].members[data].type === 'Mod') {
       rooms[roomid].members[data].type = 'Guest'
       io.in(roomid).emit('DEMOTE', data)
     }
   })
 
+  /*
+   * Recieved a kick request for a user
+   */
   socket.on('KICK', data => {
     const roomid = users[socket.id]
     if (rooms[roomid].members[data].type === 'Owner') {
       return
     }
-    delete users[data]
-    delete rooms[roomid].members[data]
+    // Send kick to that user
     io.to(data).emit('KICK')
-    io.in(roomid).emit('MEMBER_EXIT', data)
   })
 }

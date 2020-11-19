@@ -44,12 +44,12 @@ module.exports = (socket, io) => {
     const roomid = users[socket.id]
     if (rooms[roomid].members[socket.id].type === 'Guest') {
       // Guests cannot pause the video
-      if (rooms[roomid]?.current?.state !== 'PAUSED') {
+      if (rooms[roomid].current?.state !== 'PAUSED') {
         socket.emit('PLAY')
       }
     } else {
       // Owners and Mods can pause it
-      if (rooms[roomid]?.current?.state !== 'PAUSED') {
+      if (rooms[roomid].current?.state !== 'PAUSED') {
         clearInterval(rooms[roomid].current.timer)
         rooms[roomid].current = {
           ...rooms[roomid].current,
@@ -57,7 +57,7 @@ module.exports = (socket, io) => {
           state: 'PAUSED',
         }
         socket.in(roomid).emit('PAUSE', data)
-      } else if (rooms[roomid]?.current?.state === 'PAUSED') {
+      } else if (rooms[roomid].current?.state === 'PAUSED') {
         rooms[roomid].current.time = data
       }
     }
@@ -70,12 +70,12 @@ module.exports = (socket, io) => {
     const roomid = users[socket.id]
     if (rooms[roomid].members[socket.id].type === 'Guest') {
       // Guests cannot resume the video
-      if (rooms[roomid].current.state === 'PAUSED') {
+      if (rooms[roomid].current?.state === 'PAUSED') {
         socket.emit('PAUSE', rooms[roomid].current.time)
       }
     } else {
       // Owners and mods can
-      if (rooms[roomid]?.current?.state === 'PAUSED') {
+      if (rooms[roomid].current?.state === 'PAUSED') {
         socket.in(roomid).emit('PLAY')
         rooms[roomid].current = {
           ...rooms[roomid].current,
@@ -89,14 +89,12 @@ module.exports = (socket, io) => {
     }
   })
 
-  // TODO: NEW USER JOIN sync, check conditions checking and null errors
-
   /*
    * Video ended, start next video if queued
    */
   socket.on('END', data => {
     const roomid = users[socket.id]
-    if (rooms[roomid]?.current?.vid === data) {
+    if (rooms[roomid].current?.vid === data) {
       // maybe playlist id instead of vid above ??
       clearInterval(rooms[roomid].current.timer)
       if (rooms[roomid].playlist.length > 0) {

@@ -6,7 +6,7 @@ const bodyParser = require('body-parser')
 const io = require('socket.io')(http, {
   // Also requires CORS
   cors: {
-    origin: '*',
+    origin: ['http://localhost:8080', 'https://syncstream.netlify.app'],
     methods: ['GET', 'POST'],
     credentials: true,
   },
