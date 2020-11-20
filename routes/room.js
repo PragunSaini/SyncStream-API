@@ -7,6 +7,10 @@ const { createRoom, checkRoomExists } = require('../sockets/room')
 router.post('/', authenticateToken, async (req, res, next) => {
   try {
     const user = await getUser({ id: req.user.id })
+    if (user == null) {
+      res.status(401).json({ msg: 'Please register and login' })
+      return
+    }
     const roomid = createRoom(user.username)
     res.json({ roomid })
   } catch (e) {
